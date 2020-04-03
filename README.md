@@ -11,9 +11,13 @@ Currently supported browsers/platforms:
 
 ## Usage
 
+Install `errorstacks` via your package manager of choice. Here we'll use `npm`.
+
 ```bash
 npm install errorstacks
 ```
+
+Example code:
 
 ```js
 import { parseStackTrace } from 'errorstacks';
