@@ -1,7 +1,7 @@
 {
 	"name": "errorstacks",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Parse error stack traces",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
 	"types": "dist/types/index.d.ts",
