@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"target": "ES5",
+		"strict": true,
+		"sourceMap": true,
+		"outDir": "dist/cjs"
+	},
+	"files": ["./src/index.ts"]
+}
