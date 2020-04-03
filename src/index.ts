@@ -23,24 +23,15 @@ export function parseStackTrace(stack: string): StackFrame[] {
 			let name = "";
 			let type: FrameType = "";
 
-			if (isFirefox) {
-				const match = str.match(FIREFOX);
-				if (match) {
-					type = match[0] ? "" : "native";
+			const match = str.match(isFirefox ? FIREFOX : CHROME_IE);
+			if (match) {
+				if (match.length === 1) {
+					type = "native";
+				} else {
+					type = match[0] || !isFirefox ? "" : "native";
 					name = match[1];
 					line = +match[2];
 					column = +match[3];
-				}
-			} else {
-				const match = str.match(CHROME_IE);
-				if (match) {
-					if (match.length === 1) {
-						type = "native";
-					} else {
-						name = match[1];
-						line = +match[2];
-						column = +match[3];
-					}
 				}
 			}
 
