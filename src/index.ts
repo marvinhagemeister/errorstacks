@@ -6,6 +6,7 @@ export interface StackFrame {
 	column: number;
 	name: string;
 	type: FrameType;
+	raw: string;
 }
 
 export type FrameType = "native" | "";
@@ -48,6 +49,7 @@ export function parseStackTrace(stack: string): StackFrame[] {
 				column,
 				type,
 				name,
+				raw: str,
 			};
 		});
 }

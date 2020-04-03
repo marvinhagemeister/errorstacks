@@ -14,18 +14,21 @@ describe("Firefox", () => {
 				line: 1,
 				column: 27,
 				type: "",
+				raw: "foo@debugger eval code:1:27",
 			},
 			{
 				name: "bar",
 				line: 1,
 				column: 13,
 				type: "",
+				raw: "bar@debugger eval code:1:13",
 			},
 			{
 				name: "",
 				line: 1,
 				column: 13,
 				type: "",
+				raw: "@debugger eval code:1:13",
 			},
 		]);
 	});

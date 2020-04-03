@@ -15,18 +15,21 @@ describe("Chrome", () => {
 				line: 1,
 				column: 33,
 				type: "",
+				raw: "    at foo (<anonymous>:1:33)",
 			},
 			{
 				name: "bar",
 				line: 1,
 				column: 19,
 				type: "",
+				raw: "    at bar (<anonymous>:1:19)",
 			},
 			{
 				name: "",
 				line: 1,
 				column: 13,
 				type: "",
+				raw: "    at <anonymous>:1:13",
 			},
 		]);
 	});
