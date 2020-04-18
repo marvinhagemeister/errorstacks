@@ -5,6 +5,7 @@ export interface StackFrame {
 	line: number;
 	column: number;
 	name: string;
+	fileName: string;
 	type: FrameType;
 	raw: string;
 }
