@@ -1,5 +1,5 @@
-const CHROME_IE = /^\s*at ([a-zA-Z0-9_]*).*\(?\S+:(\d+):(\d+)\)?/;
-const FIREFOX = /(\S+|^)@.*:(\d+):(\d+)/;
+const CHROME_IE = /^\s*at ([a-zA-Z0-9_]*).*?\s?\(?(.*):(\d+):(\d+)\)?/;
+const FIREFOX = /(\S+|^)@(.*):(\d+):(\d+)/;
 
 export interface StackFrame {
 	line: number;
@@ -21,6 +21,7 @@ export function parseStackTrace(stack: string): StackFrame[] {
 			let line = -1;
 			let column = -1;
 			let name = "";
+			let fileName = "";
 			let type: FrameType = "";
 
 			const match = str.match(isFirefox ? FIREFOX : CHROME_IE);
@@ -30,8 +31,9 @@ export function parseStackTrace(stack: string): StackFrame[] {
 				} else {
 					type = match[0] || !isFirefox ? "" : "native";
 					name = match[1];
-					line = +match[2];
-					column = +match[3];
+					fileName = match[2];
+					line = +match[3];
+					column = +match[4];
 				}
 			}
 
@@ -39,6 +41,7 @@ export function parseStackTrace(stack: string): StackFrame[] {
 				line,
 				column,
 				type,
+				fileName,
 				name,
 				raw: str,
 			};

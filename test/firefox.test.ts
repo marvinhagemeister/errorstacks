@@ -14,6 +14,7 @@ describe("Firefox", () => {
 				line: 1,
 				column: 27,
 				type: "",
+				fileName: "debugger eval code",
 				raw: "foo@debugger eval code:1:27",
 			},
 			{
@@ -21,6 +22,7 @@ describe("Firefox", () => {
 				line: 1,
 				column: 13,
 				type: "",
+				fileName: "debugger eval code",
 				raw: "bar@debugger eval code:1:13",
 			},
 			{
@@ -28,6 +30,7 @@ describe("Firefox", () => {
 				line: 1,
 				column: 13,
 				type: "",
+				fileName: "debugger eval code",
 				raw: "@debugger eval code:1:13",
 			},
 		]);

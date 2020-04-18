@@ -15,6 +15,7 @@ describe("Chrome", () => {
 				line: 1,
 				column: 33,
 				type: "",
+				fileName: "<anonymous>",
 				raw: "    at foo (<anonymous>:1:33)",
 			},
 			{
@@ -22,6 +23,7 @@ describe("Chrome", () => {
 				line: 1,
 				column: 19,
 				type: "",
+				fileName: "<anonymous>",
 				raw: "    at bar (<anonymous>:1:19)",
 			},
 			{
@@ -29,6 +31,7 @@ describe("Chrome", () => {
 				line: 1,
 				column: 13,
 				type: "",
+				fileName: "<anonymous>",
 				raw: "    at <anonymous>:1:13",
 			},
 		]);
