@@ -1,4 +1,4 @@
-const CHROME_IE = /^\s*at ([a-zA-Z0-9_]*).*?\s?\(?(.*):(\d+):(\d+)\)?/;
+const CHROME_IE = /^\s*at ([a-zA-Z0-9_.\[\] ]*).*?\s?\(?(.*):(\d+):(\d+)\)?/;
 const FIREFOX = /(\S+|^)@(.*):(\d+):(\d+)/;
 
 export interface StackFrame {
@@ -30,7 +30,7 @@ export function parseStackTrace(stack: string): StackFrame[] {
 					type = "native";
 				} else {
 					type = match[0] || !isFirefox ? "" : "native";
-					name = match[1];
+					name = (match[1] || "").trim();
 					fileName = match[2];
 					line = +match[3];
 					column = +match[4];
