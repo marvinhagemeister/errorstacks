@@ -35,4 +35,66 @@ describe("Firefox", () => {
 			},
 		]);
 	});
+
+	it("should should match stack trace #2", () => {
+		const trace = "@http://localhost:3000/App.jsx?t=1589606689786:33:7";
+
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 7,
+				fileName: "http://localhost:3000/App.jsx?t=1589606689786",
+				line: 33,
+				name: "",
+				raw: "@http://localhost:3000/App.jsx?t=1589606689786:33:7",
+				type: "",
+			},
+		]);
+	});
+
+	it("should should match stack trace #3", () => {
+		const trace =
+			"App@http://localhost:3000/App.jsx?t=1589606715125:31:9\n" +
+			"E@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:7584\n" +
+			"b/l.__k<@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:1908\n" +
+			"@http://localhost:3000/main.js:52:7\n";
+
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 9,
+				fileName: "http://localhost:3000/App.jsx?t=1589606715125",
+				line: 31,
+				name: "App",
+				raw: "App@http://localhost:3000/App.jsx?t=1589606715125:31:9",
+				type: "",
+			},
+			{
+				column: 7584,
+				fileName:
+					"http://localhost:3000/@modules/preact/dist/preact.mjs?import",
+				line: 1,
+				name: "E",
+				raw:
+					"E@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:7584",
+				type: "",
+			},
+			{
+				column: 1908,
+				fileName:
+					"http://localhost:3000/@modules/preact/dist/preact.mjs?import",
+				line: 1,
+				name: "b/l.__k<",
+				raw:
+					"b/l.__k<@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:1908",
+				type: "",
+			},
+			{
+				column: 7,
+				fileName: "http://localhost:3000/main.js",
+				line: 52,
+				name: "",
+				raw: "@http://localhost:3000/main.js:52:7",
+				type: "",
+			},
+		]);
+	});
 });

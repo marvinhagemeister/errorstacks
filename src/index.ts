@@ -1,5 +1,5 @@
 const CHROME_IE = /^\s*at ([a-zA-Z0-9_.\[\] ]*).*?\s?\(?(.*):(\d+):(\d+)\)?/;
-const FIREFOX = /(\S+|^)@(.*):(\d+):(\d+)/;
+const FIREFOX = /([^@]+|^)@(.*):(\d+):(\d+)/;
 
 export interface StackFrame {
 	line: number;
