@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { parseStackTrace } from "../src";
 
 describe("Webpack", () => {
-	it("chrome", () => {
+	it("should parse source mappings from Chrome", () => {
 		const trace =
 			"Error: fail\n" +
 			"    at foo (<anonymous>:1:33)\n" +
@@ -17,9 +17,9 @@ describe("Webpack", () => {
 				type: "",
 				fileName: "<anonymous>",
 				raw: "    at foo (<anonymous>:1:33)",
-				sourceColumn: 0,
+				sourceColumn: -1,
 				sourceFileName: "",
-				sourceLine: 0,
+				sourceLine: -1,
 			},
 			{
 				name: "bar",
@@ -39,9 +39,9 @@ describe("Webpack", () => {
 				type: "",
 				fileName: "<anonymous>",
 				raw: "    at <anonymous>:1:13",
-				sourceColumn: 0,
+				sourceColumn: -1,
 				sourceFileName: "",
-				sourceLine: 0,
+				sourceLine: -1,
 			},
 		]);
 	});
