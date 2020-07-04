@@ -17,6 +17,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "<anonymous>",
 				raw: "    at foo (<anonymous>:1:33)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "bar",
@@ -25,6 +28,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "<anonymous>",
 				raw: "    at bar (<anonymous>:1:19)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "",
@@ -33,6 +39,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "<anonymous>",
 				raw: "    at <anonymous>:1:13",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 		]);
 	});
@@ -59,6 +68,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "installHook.js",
 				raw: "    at addHookStack (installHook.js:845:18)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "Object.o._hook.o.__h",
@@ -67,6 +79,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "installHook.js",
 				raw: "    at Object.o._hook.o.__h (installHook.js:1502:14)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "p",
@@ -75,6 +90,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "preactHooks.js",
 				raw: "    at p (preactHooks.js:18:30)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "n.useEffect",
@@ -83,6 +101,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "preactHooks.js",
 				raw: "    at n.useEffect (preactHooks.js:139:12)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "useBar",
@@ -91,6 +112,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "test-case.js",
 				raw: "    at useBar (test-case.js:51:2)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "useFoo",
@@ -99,6 +123,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "test-case.js",
 				raw: "    at useFoo (test-case.js:56:9)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "m.CustomHooks [as constructor]",
@@ -107,6 +134,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "test-case.js",
 				raw: "    at m.CustomHooks [as constructor] (test-case.js:60:14)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "inspectHooks",
@@ -115,6 +145,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "installHook.js",
 				raw: "    at inspectHooks (installHook.js:941:16)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "inspectVNode",
@@ -123,6 +156,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "installHook.js",
 				raw: "    at inspectVNode (installHook.js:975:31)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "Object.inspect",
@@ -131,6 +167,9 @@ describe("Chrome", () => {
 				type: "",
 				fileName: "installHook.js",
 				raw: "    at Object.inspect (installHook.js:1290:25)",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 		]);
 	});

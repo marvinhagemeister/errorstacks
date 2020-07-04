@@ -16,6 +16,9 @@ describe("Firefox", () => {
 				type: "",
 				fileName: "debugger eval code",
 				raw: "foo@debugger eval code:1:27",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "bar",
@@ -24,6 +27,9 @@ describe("Firefox", () => {
 				type: "",
 				fileName: "debugger eval code",
 				raw: "bar@debugger eval code:1:13",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				name: "",
@@ -32,6 +38,9 @@ describe("Firefox", () => {
 				type: "",
 				fileName: "debugger eval code",
 				raw: "@debugger eval code:1:13",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 		]);
 	});
@@ -47,6 +56,9 @@ describe("Firefox", () => {
 				name: "",
 				raw: "@http://localhost:3000/App.jsx?t=1589606689786:33:7",
 				type: "",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 		]);
 	});
@@ -66,6 +78,9 @@ describe("Firefox", () => {
 				name: "App",
 				raw: "App@http://localhost:3000/App.jsx?t=1589606715125:31:9",
 				type: "",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				column: 7584,
@@ -76,6 +91,9 @@ describe("Firefox", () => {
 				raw:
 					"E@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:7584",
 				type: "",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				column: 1908,
@@ -86,6 +104,9 @@ describe("Firefox", () => {
 				raw:
 					"b/l.__k<@http://localhost:3000/@modules/preact/dist/preact.mjs?import:1:1908",
 				type: "",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 			{
 				column: 7,
@@ -94,6 +115,9 @@ describe("Firefox", () => {
 				name: "",
 				raw: "@http://localhost:3000/main.js:52:7",
 				type: "",
+				sourceColumn: 0,
+				sourceFileName: "",
+				sourceLine: 0,
 			},
 		]);
 	});

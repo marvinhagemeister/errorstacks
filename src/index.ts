@@ -1,4 +1,4 @@
-const CHROME_IE = /^\s*at ([a-zA-Z0-9_.\[\] ]*).*?\s?\(?(.*):(\d+):(\d+)\)?/;
+const CHROME_IE = /^\s*at ([a-zA-Z0-9_.\[\] ]*).*?\s?\(?(.*?):(\d+):(\d+)(?:\s<-\s(.+):(\d+):(\d+))?\)?/;
 const FIREFOX = /([^@]+|^)@(.*):(\d+):(\d+)/;
 
 export interface StackFrame {
@@ -8,6 +8,12 @@ export interface StackFrame {
 	fileName: string;
 	type: FrameType;
 	raw: string;
+
+	// Some bundlers like webpack add the original source
+	// location to the stack
+	sourceLine: number;
+	sourceColumn: number;
+	sourceFileName: string;
 }
 
 export type FrameType = "native" | "";
@@ -24,6 +30,9 @@ export function parseStackTrace(stack: string): StackFrame[] {
 			let name = "";
 			let fileName = "";
 			let type: FrameType = "";
+			let sourceLine = 0;
+			let sourceColumn = 0;
+			let sourceFileName = "";
 
 			const match = str.match(isFirefox ? FIREFOX : CHROME_IE);
 			if (match) {
@@ -35,6 +44,16 @@ export function parseStackTrace(stack: string): StackFrame[] {
 					fileName = match[2];
 					line = +match[3];
 					column = +match[4];
+
+					if (match[5]) {
+						sourceFileName = match[5];
+					}
+					if (match[6]) {
+						sourceLine = +match[6];
+					}
+					if (match[7]) {
+						sourceColumn = +match[7];
+					}
 				}
 			}
 
@@ -45,6 +64,9 @@ export function parseStackTrace(stack: string): StackFrame[] {
 				fileName,
 				name,
 				raw: str,
+				sourceColumn,
+				sourceFileName,
+				sourceLine,
 			};
 		});
 }
