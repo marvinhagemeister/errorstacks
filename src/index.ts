@@ -56,6 +56,8 @@ function parseFirefox(lines: string[]): StackFrame[] {
 	});
 }
 
+// foo.bar.js:123:39
+// foo.bar.js:123:39 <- original.js:123:34
 const CHROME_MAPPED = /(.*?):(\d+):(\d+)(\s<-\s(.+):(\d+):(\d+))?/;
 function parseMapped(frame: StackFrame, maybeMapped: string) {
 	const match = maybeMapped.match(CHROME_MAPPED);
@@ -70,8 +72,12 @@ function parseMapped(frame: StackFrame, maybeMapped: string) {
 	}
 }
 
+// at <SomeFramework>
 const CHROME_IE_NATIVE_NO_LINE = /^at\s(<.*>)$/;
+// at <SomeFramework>:123:39
 const CHROME_IE_NATIVE = /^\s*at\s(<.*>):(\d+):(\d+)$/;
+// at foo.bar(bob) (foo.bar.js:123:39)
+// at foo.bar(bob) (foo.bar.js:123:39 <- original.js:123:34)
 const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
 
