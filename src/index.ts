@@ -56,9 +56,23 @@ function parseFirefox(lines: string[]): StackFrame[] {
 	});
 }
 
-const CHROME_IE = /^\s*at\s([a-zA-Z0-9_.\[\] <>]*).*?\s?\((.*?):(\d+):(\d+)(?:\s<-\s(.+):(\d+):(\d+))?\)/;
-const CHROME_IE_SHORT = /^\s*at\s(.*):(\d+):(\d+)/;
-const CHROME_IE_NATIVE = /\s*at\s<(.*)>\s*/;
+const CHROME_MAPPED = /(.*?):(\d+):(\d+)(\s<-\s(.+):(\d+):(\d+))?/;
+function parseMapped(frame: StackFrame, maybeMapped: string) {
+	const match = maybeMapped.match(CHROME_MAPPED);
+	if (match) {
+		frame.fileName = match[1];
+		frame.line = +match[2];
+		frame.column = +match[3];
+
+		if (match[5]) frame.sourceFileName = match[5];
+		if (match[6]) frame.sourceLine = +match[6];
+		if (match[7]) frame.sourceColumn = +match[7];
+	}
+}
+
+const CHROME_IE_NATIVE_NO_LINE = /^at\s(<.*>)$/;
+const CHROME_IE_NATIVE = /^\s*at\s(<.*>):(\d+):(\d+)$/;
+const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
 
 function parseChromeIe(lines: string[]): StackFrame[] {
@@ -71,39 +85,33 @@ function parseChromeIe(lines: string[]): StackFrame[] {
 
 	const frames: StackFrame[] = [];
 	for (let i = start; i < lines.length; i++) {
-		const str = lines[i];
+		const str = lines[i].replace(/^\s+|\s+$/g, "");
 
-		const frame = createRawFrame(str);
+		const frame = createRawFrame(lines[i]);
 
-		const match = str.match(CHROME_IE);
-		if (match) {
-			frame.name = (match[1] || "").trim();
-			frame.line = match[3] ? +match[3] : -1;
-			frame.column = match[4] ? +match[4] : -1;
-			frame.fileName = match[2] ? match[2] : "";
-
-			frame.sourceLine = match[6] ? +match[6] : -1;
-			frame.sourceColumn = match[7] ? +match[7] : -1;
-			frame.sourceFileName = match[5] ? match[5] : "";
-
-			frames.push(frame);
-			continue;
-		}
-
-		// Short form
-		const short = str.match(CHROME_IE_SHORT);
-		if (short) {
-			if (short[1]) frame.fileName = short[1];
-			if (short[2]) frame.line = +short[2];
-			if (short[3]) frame.column = +short[3];
+		const nativeNoLine = str.match(CHROME_IE_NATIVE_NO_LINE);
+		if (nativeNoLine) {
+			frame.fileName = nativeNoLine[1];
+			frame.type = "native";
 			frames.push(frame);
 			continue;
 		}
 
 		const native = str.match(CHROME_IE_NATIVE);
 		if (native) {
-			frame.name = native[1];
+			frame.fileName = native[1];
 			frame.type = "native";
+			if (native[2]) frame.line = +native[2];
+			if (native[3]) frame.column = +native[3];
+
+			frames.push(frame);
+			continue;
+		}
+
+		const withFn = str.match(CHROME_IE_FUNCTION);
+		if (withFn) {
+			frame.name = withFn[1];
+			parseMapped(frame, withFn[2]);
 			frames.push(frame);
 			continue;
 		}

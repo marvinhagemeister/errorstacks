@@ -36,7 +36,7 @@ describe("Chrome", () => {
 				name: "",
 				line: 1,
 				column: 13,
-				type: "",
+				type: "native",
 				fileName: "<anonymous>",
 				raw: "    at <anonymous>:1:13",
 				sourceColumn: -1,
@@ -194,11 +194,11 @@ describe("Chrome", () => {
 				sourceLine: 435,
 			},
 			{
-				name: "Jasmine",
+				name: "",
 				line: -1,
 				column: -1,
 				type: "native",
-				fileName: "",
+				fileName: "<Jasmine>",
 				raw: "  at <Jasmine>",
 				sourceColumn: -1,
 				sourceFileName: "",
@@ -212,11 +212,11 @@ describe("Chrome", () => {
 
 		expect(parseStackTrace(trace)).to.deep.equal([
 			{
-				name: "Test",
+				name: "",
 				line: -1,
 				column: -1,
 				type: "native",
-				fileName: "",
+				fileName: "<Test>",
 				raw: "  at <Test>",
 				sourceColumn: -1,
 				sourceFileName: "",
@@ -251,6 +251,38 @@ describe("Chrome", () => {
 				sourceColumn: -1,
 				sourceFileName: "",
 				sourceLine: -1,
+			},
+		]);
+	});
+
+	it("should match function with parens", () => {
+		const trace = `Error
+  at addHookStack (<anonymous>:2786:16)
+  at Object.WithStyles(ForwardRef(ButtonBase)) (https://example.com/foo.js:221:28)`;
+
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 16,
+				fileName: "<anonymous>",
+				line: 2786,
+				name: "addHookStack",
+				raw: "  at addHookStack (<anonymous>:2786:16)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 28,
+				fileName: "https://example.com/foo.js",
+				line: 221,
+				name: "Object.WithStyles(ForwardRef(ButtonBase))",
+				raw:
+					"  at Object.WithStyles(ForwardRef(ButtonBase)) (https://example.com/foo.js:221:28)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
 			},
 		]);
 	});
@@ -364,9 +396,9 @@ describe("Chrome", () => {
 			{
 				column: 28,
 				fileName:
-					"ForwardRef(ButtonBase)) (https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js",
+					"https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js",
 				line: 221,
-				name: "Object.WithStyles",
+				name: "Object.WithStyles(ForwardRef(ButtonBase))",
 				raw:
 					"    at Object.WithStyles(ForwardRef(ButtonBase)) (https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js:221:28)",
 				sourceColumn: -1,
@@ -438,7 +470,7 @@ describe("Chrome", () => {
 				sourceColumn: -1,
 				sourceFileName: "",
 				sourceLine: -1,
-				type: "",
+				type: "native",
 			},
 			{
 				column: 32,
@@ -449,7 +481,7 @@ describe("Chrome", () => {
 				sourceColumn: -1,
 				sourceFileName: "",
 				sourceLine: -1,
-				type: "",
+				type: "native",
 			},
 		]);
 	});
