@@ -36,7 +36,7 @@ describe("Webpack", () => {
 				name: "",
 				line: 1,
 				column: 13,
-				type: "",
+				type: "native",
 				fileName: "<anonymous>",
 				raw: "    at <anonymous>:1:13",
 				sourceColumn: -1,

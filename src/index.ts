@@ -31,87 +31,93 @@ function createRawFrame(raw: string): StackFrame {
 
 const FIREFOX = /([^@]+|^)@(.*):(\d+):(\d+)/;
 
-export function parseFirefox(stack: string): StackFrame[] {
-	return stack
-		.split("\n")
-		.filter(Boolean)
-		.map((str) => {
-			const match = str.match(FIREFOX);
-			if (!match) {
-				return createRawFrame(str);
-			}
+function parseFirefox(lines: string[]): StackFrame[] {
+	return lines.map(str => {
+		const match = str.match(FIREFOX);
+		if (!match) {
+			return createRawFrame(str);
+		}
 
-			const line = match[3] ? +match[3] : -1;
-			const column = match[4] ? +match[4] : -1;
-			const fileName = match[2] ? match[2] : "";
+		const line = match[3] ? +match[3] : -1;
+		const column = match[4] ? +match[4] : -1;
+		const fileName = match[2] ? match[2] : "";
 
-			return {
-				line,
-				column,
-				type: match[0] ? "" : "native",
-				fileName,
-				name: (match[1] || "").trim(),
-				raw: str,
-				sourceColumn: -1,
-				sourceFileName: "",
-				sourceLine: -1,
-			};
-		});
+		return {
+			line,
+			column,
+			type: match[0] ? "" : "native",
+			fileName,
+			name: (match[1] || "").trim(),
+			raw: str,
+			sourceColumn: -1,
+			sourceFileName: "",
+			sourceLine: -1,
+		};
+	});
 }
 
-const CHROME_IE = /^\s*at\s([a-zA-Z0-9_.\[\] <>]*).*?\s?\((.*?):(\d+):(\d+)(?:\s<-\s(.+):(\d+):(\d+))?\)/;
-const CHROME_IE_SHORT = /^\s*at\s(.*):(\d+):(\d+)/;
-const CHROME_IE_NATIVE = /\s*at\s<(.*)>\s*/;
+// foo.bar.js:123:39
+// foo.bar.js:123:39 <- original.js:123:34
+const CHROME_MAPPED = /(.*?):(\d+):(\d+)(\s<-\s(.+):(\d+):(\d+))?/;
+function parseMapped(frame: StackFrame, maybeMapped: string) {
+	const match = maybeMapped.match(CHROME_MAPPED);
+	if (match) {
+		frame.fileName = match[1];
+		frame.line = +match[2];
+		frame.column = +match[3];
+
+		if (match[5]) frame.sourceFileName = match[5];
+		if (match[6]) frame.sourceLine = +match[6];
+		if (match[7]) frame.sourceColumn = +match[7];
+	}
+}
+
+// at <SomeFramework>
+const CHROME_IE_NATIVE_NO_LINE = /^at\s(<.*>)$/;
+// at <SomeFramework>:123:39
+const CHROME_IE_NATIVE = /^\s*at\s(<.*>):(\d+):(\d+)$/;
+// at foo.bar(bob) (foo.bar.js:123:39)
+// at foo.bar(bob) (foo.bar.js:123:39 <- original.js:123:34)
+const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
 
-export function parseChromeIe(stack: string): StackFrame[] {
-	const lines = stack.split("\n");
-
+function parseChromeIe(lines: string[]): StackFrame[] {
 	// Many frameworks mess with error.stack. So we use this check
 	// to find the first line of the actual stack
-	const start = lines.findIndex((line) => CHROME_IE_DETECTOR.test(line));
+	const start = lines.findIndex(line => CHROME_IE_DETECTOR.test(line));
 	if (start === -1) {
 		return [];
 	}
 
 	const frames: StackFrame[] = [];
 	for (let i = start; i < lines.length; i++) {
-		const str = lines[i];
+		const str = lines[i].replace(/^\s+|\s+$/g, "");
 
-		// Sometimes frameworks will put an empty line inbetween
-		if (!str) continue;
+		const frame = createRawFrame(lines[i]);
 
-		const frame = createRawFrame(str);
-
-		const match = str.match(CHROME_IE);
-		if (match) {
-			frame.name = (match[1] || "").trim();
-			frame.line = match[3] ? +match[3] : -1;
-			frame.column = match[4] ? +match[4] : -1;
-			frame.fileName = match[2] ? match[2] : "";
-
-			frame.sourceLine = match[6] ? +match[6] : -1;
-			frame.sourceColumn = match[7] ? +match[7] : -1;
-			frame.sourceFileName = match[5] ? match[5] : "";
-
-			frames.push(frame);
-			continue;
-		}
-
-		// Short form
-		const short = str.match(CHROME_IE_SHORT);
-		if (short) {
-			if (short[1]) frame.fileName = short[1];
-			if (short[2]) frame.line = +short[2];
-			if (short[3]) frame.column = +short[3];
+		const nativeNoLine = str.match(CHROME_IE_NATIVE_NO_LINE);
+		if (nativeNoLine) {
+			frame.fileName = nativeNoLine[1];
+			frame.type = "native";
 			frames.push(frame);
 			continue;
 		}
 
 		const native = str.match(CHROME_IE_NATIVE);
 		if (native) {
-			frame.name = native[1];
+			frame.fileName = native[1];
 			frame.type = "native";
+			if (native[2]) frame.line = +native[2];
+			if (native[3]) frame.column = +native[3];
+
+			frames.push(frame);
+			continue;
+		}
+
+		const withFn = str.match(CHROME_IE_FUNCTION);
+		if (withFn) {
+			frame.name = withFn[1];
+			parseMapped(frame, withFn[2]);
 			frames.push(frame);
 			continue;
 		}
@@ -123,9 +129,13 @@ export function parseChromeIe(stack: string): StackFrame[] {
 }
 
 export function parseStackTrace(stack: string): StackFrame[] {
-	if (FIREFOX.test(stack)) {
-		return parseFirefox(stack);
-	}
+	const lines = stack.split("\n").filter(Boolean);
 
-	return parseChromeIe(stack);
+	// Libraries like node's "assert" module mess with the stack trace by
+	// prepending custom data. So we need to do a precheck, to determine
+	// which browser the trace is coming from.
+	if (lines.some(line => CHROME_IE_DETECTOR.test(line))) {
+		return parseChromeIe(lines);
+	}
+	return parseFirefox(lines);
 }
