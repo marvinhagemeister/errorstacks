@@ -254,4 +254,203 @@ describe("Chrome", () => {
 			},
 		]);
 	});
+
+	it("should parse codesandbox trace", () => {
+		const trace = `Error
+    at addHookStack (<anonymous>:2786:16)
+    at Object.o._hook.o.__h (<anonymous>:4189:10)
+    at v (https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js:85:63)
+    at Object.F [as useContext] (https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js:132:33)
+    at useTheme (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/useTheme/useTheme.js:10:34)
+    at useStyles (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/makeStyles/makeStyles.js:173:38)
+    at WithStyles (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/withStyles/withStyles.js:48:21)
+    at Object.WithStyles(ForwardRef(ButtonBase)) (https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js:221:28)
+    at inspectHooks (<anonymous>:2972:22)
+    at inspectVNode (<anonymous>:3009:46)
+    at Object.inspect (<anonymous>:3935:21)
+    at Object.inspect (<anonymous>:4318:26)
+    at inspect (<anonymous>:1589:30)
+    at <anonymous>:1628:6
+		at <anonymous>:4590:32`;
+
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 16,
+				fileName: "<anonymous>",
+				line: 2786,
+				name: "addHookStack",
+				raw: "    at addHookStack (<anonymous>:2786:16)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 10,
+				fileName: "<anonymous>",
+				line: 4189,
+				name: "Object.o._hook.o.__h",
+				raw: "    at Object.o._hook.o.__h (<anonymous>:4189:10)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 63,
+				fileName:
+					"https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js",
+				line: 85,
+				name: "v",
+				raw:
+					"    at v (https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js:85:63)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 33,
+				fileName:
+					"https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js",
+				line: 132,
+				name: "Object.F [as useContext]",
+				raw:
+					"    at Object.F [as useContext] (https://t0e6p.csb.app/node_modules/preact/hooks/dist/hooks.module.js:132:33)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 34,
+				fileName:
+					"https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/useTheme/useTheme.js",
+				line: 10,
+				name: "useTheme",
+				raw:
+					"    at useTheme (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/useTheme/useTheme.js:10:34)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 38,
+				fileName:
+					"https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/makeStyles/makeStyles.js",
+				line: 173,
+				name: "useStyles",
+				raw:
+					"    at useStyles (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/makeStyles/makeStyles.js:173:38)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 21,
+				fileName:
+					"https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/withStyles/withStyles.js",
+				line: 48,
+				name: "WithStyles",
+				raw:
+					"    at WithStyles (https://t0e6p.csb.app/node_modules/@material-ui/styles/esm/withStyles/withStyles.js:48:21)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 28,
+				fileName:
+					"ForwardRef(ButtonBase)) (https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js",
+				line: 221,
+				name: "Object.WithStyles",
+				raw:
+					"    at Object.WithStyles(ForwardRef(ButtonBase)) (https://t0e6p.csb.app/node_modules/preact/compat/dist/compat.module.js:221:28)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 22,
+				fileName: "<anonymous>",
+				line: 2972,
+				name: "inspectHooks",
+				raw: "    at inspectHooks (<anonymous>:2972:22)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 46,
+				fileName: "<anonymous>",
+				line: 3009,
+				name: "inspectVNode",
+				raw: "    at inspectVNode (<anonymous>:3009:46)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 21,
+				fileName: "<anonymous>",
+				line: 3935,
+				name: "Object.inspect",
+				raw: "    at Object.inspect (<anonymous>:3935:21)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 26,
+				fileName: "<anonymous>",
+				line: 4318,
+				name: "Object.inspect",
+				raw: "    at Object.inspect (<anonymous>:4318:26)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 30,
+				fileName: "<anonymous>",
+				line: 1589,
+				name: "inspect",
+				raw: "    at inspect (<anonymous>:1589:30)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 6,
+				fileName: "<anonymous>",
+				line: 1628,
+				name: "",
+				raw: "    at <anonymous>:1628:6",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 32,
+				fileName: "<anonymous>",
+				line: 4590,
+				name: "",
+				raw: "\t\tat <anonymous>:4590:32",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+		]);
+	});
 });
