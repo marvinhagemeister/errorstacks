@@ -14,7 +14,8 @@
 	},
 	"scripts": {
 		"test": "mocha -r ts-node/register --extension ts 'test/*test.ts'",
-		"build": "rimraf dist/ && tsc && tsc -p tsconfig.esm.json"
+		"build": "rimraf dist/ && tsc && tsc -p tsconfig.esm.json",
+		"format": "prettier --write src/**/*.ts test/**/*.ts"
 	},
 	"author": "Marvin Hagemeister <hello@marvinh.dev>",
 	"license": "MIT",
@@ -23,9 +24,26 @@
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^13.11.0",
 		"chai": "^4.2.0",
+		"husky": "^4.3.0",
+		"lint-staged": "^10.4.0",
 		"mocha": "^7.1.1",
+		"prettier": "^2.1.2",
 		"rimraf": "^3.0.2",
 		"ts-node": "^8.8.1",
 		"typescript": "^3.8.3"
+	},
+	"prettier": {
+		"useTabs": true,
+		"arrowParens": "avoid"
+	},
+	"lint-staged": {
+		"**/*.{js,jsx,ts,tsx,json}": [
+			"prettier --write"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }
