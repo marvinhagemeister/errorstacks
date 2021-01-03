@@ -12,10 +12,14 @@
 	"bugs": {
 		"url": "https://github.com/marvinhagemeister/errorstacks/issues"
 	},
+	"files": [
+		"dist/"
+	],
 	"scripts": {
 		"test": "mocha -r ts-node/register --extension ts 'test/*test.ts'",
 		"build": "rimraf dist/ && tsc && tsc -p tsconfig.esm.json",
-		"format": "prettier --write src/**/*.ts test/**/*.ts"
+		"format": "prettier --write src/**/*.ts test/**/*.ts",
+		"prepublishOnly": "npm run build"
 	},
 	"author": "Marvin Hagemeister <hello@marvinh.dev>",
 	"license": "MIT",
