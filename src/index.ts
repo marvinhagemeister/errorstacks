@@ -80,6 +80,8 @@ const CHROME_IE_NATIVE = /^\s*at\s(<.*>):(\d+):(\d+)$/;
 // at foo.bar(bob) (foo.bar.js:123:39 <- original.js:123:34)
 const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
+// at about:blank:1:7
+const CHROME_BLANK = /\s*at\s(.*):(\d+):(\d+)/;
 
 function parseChromeIe(lines: string[]): StackFrame[] {
 	// Many frameworks mess with error.stack. So we use this check
@@ -118,6 +120,15 @@ function parseChromeIe(lines: string[]): StackFrame[] {
 		if (withFn) {
 			frame.name = withFn[1];
 			parseMapped(frame, withFn[2]);
+			frames.push(frame);
+			continue;
+		}
+
+		const blank = str.match(CHROME_BLANK);
+		if (blank) {
+			frame.fileName = blank[1];
+			frame.line = +blank[2];
+			frame.column = +blank[3];
 			frames.push(frame);
 			continue;
 		}
