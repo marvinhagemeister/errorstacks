@@ -485,4 +485,110 @@ describe("Chrome", () => {
 			},
 		]);
 	});
+
+	it("should parse lines with no function names", () => {
+		const trace = `Error: my error msg
+    at c (<anonymous>:1:17)
+    at b (<anonymous>:2:17)
+    at a (<anonymous>:3:17)
+    at <anonymous>:4:13
+`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 17,
+				fileName: "<anonymous>",
+				line: 1,
+				name: "c",
+				raw: "    at c (<anonymous>:1:17)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 17,
+				fileName: "<anonymous>",
+				line: 2,
+				name: "b",
+				raw: "    at b (<anonymous>:2:17)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 17,
+				fileName: "<anonymous>",
+				line: 3,
+				name: "a",
+				raw: "    at a (<anonymous>:3:17)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 13,
+				fileName: "<anonymous>",
+				line: 4,
+				name: "",
+				raw: "    at <anonymous>:4:13",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "native",
+			},
+		]);
+	});
+
+	it("should parse new tab page error", () => {
+		const trace = `Error: error in module\n    at chrome://new-tab-page/:1:7`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 7,
+				fileName: "chrome://new-tab-page/",
+				line: 1,
+				name: "",
+				raw: "    at chrome://new-tab-page/:1:7",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+		]);
+	});
+
+	it("should parse about:blank page error", () => {
+		const trace = `Error: error in module\n    at about:blank:1:7`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 7,
+				fileName: "about:blank",
+				line: 1,
+				name: "",
+				raw: "    at about:blank:1:7",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+		]);
+	});
+
+	it("should parse anonymous error", () => {
+		const trace = `Error: error in module\n    at <anonymous>:4:13`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 13,
+				fileName: "<anonymous>",
+				line: 4,
+				name: "",
+				raw: "    at <anonymous>:4:13",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "native",
+			},
+		]);
+	});
 });

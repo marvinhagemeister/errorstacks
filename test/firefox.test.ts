@@ -121,4 +121,32 @@ describe("Firefox", () => {
 			},
 		]);
 	});
+
+	it("should parse errors from about:blank", () => {
+		const trace = `@about:blank line 5 > injectedScript:1:7\n@debugger eval code:5:15\n`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 7,
+				fileName: "about:blank line 5 > injectedScript",
+				line: 1,
+				name: "",
+				raw: "@about:blank line 5 > injectedScript:1:7",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 15,
+				fileName: "debugger eval code",
+				line: 5,
+				name: "",
+				raw: "@debugger eval code:5:15",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+		]);
+	});
 });
