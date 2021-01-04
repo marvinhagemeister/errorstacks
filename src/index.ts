@@ -29,13 +29,51 @@ function createRawFrame(raw: string): StackFrame {
 	};
 }
 
-const FIREFOX = /([^@]+|^)@(.*):(\d+):(\d+)/;
+const FIREFOX_WEBKIT = /([^@]+|^)@(.*):(\d+):(\d+)/;
+const WEBKIT_ADDRESS_UNNAMED = /^(http(s)?:\/\/.*):(\d+):(\d+)$/;
+const WEBKIT_NATIVE_UNNAMED = "[native code]";
 
-function parseFirefox(lines: string[]): StackFrame[] {
+function parsWebkit(str: string): StackFrame {
+	if (str.includes(WEBKIT_NATIVE_UNNAMED)) {
+		return {
+			line: -1,
+			column: -1,
+			type: "native",
+			fileName: "",
+			name: "",
+			raw: str,
+			sourceColumn: -1,
+			sourceFileName: "",
+			sourceLine: -1,
+		};
+	}
+
+	const match = str.match(WEBKIT_ADDRESS_UNNAMED);
+	if (match) {
+		const line = match[3] ? +match[3] : -1;
+		const column = match[4] ? +match[4] : -1;
+		const fileName = match[1] ? match[1] : "";
+		return {
+			line,
+			column,
+			type: "",
+			fileName,
+			name: "",
+			raw: str,
+			sourceColumn: -1,
+			sourceFileName: "",
+			sourceLine: -1,
+		};
+	}
+
+	return createRawFrame(str);
+}
+
+function parseFirefoxWebkit(lines: string[]): StackFrame[] {
 	return lines.map(str => {
-		const match = str.match(FIREFOX);
+		const match = str.match(FIREFOX_WEBKIT);
 		if (!match) {
-			return createRawFrame(str);
+			return parsWebkit(str);
 		}
 
 		const line = match[3] ? +match[3] : -1;
@@ -148,5 +186,5 @@ export function parseStackTrace(stack: string): StackFrame[] {
 	if (lines.some(line => CHROME_IE_DETECTOR.test(line))) {
 		return parseChromeIe(lines);
 	}
-	return parseFirefox(lines);
+	return parseFirefoxWebkit(lines);
 }
