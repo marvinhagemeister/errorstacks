@@ -591,4 +591,53 @@ describe("Chrome", () => {
 			},
 		]);
 	});
+
+	it("should parse Chrome 88 style traces without mapped function", () => {
+		const trace = `Error: foobar\n    spy() at Component.Foo [as constructor] (base/compat/test/browser/memo.test.js:1944:9)\n
+    at Context.<anonymous> (base/compat/test/browser/memo.test.js:1973:24)"`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 9,
+				fileName: "base/compat/test/browser/memo.test.js",
+				line: 1944,
+				name: "spy() at Component.Foo [as constructor]",
+				raw:
+					"    spy() at Component.Foo [as constructor] (base/compat/test/browser/memo.test.js:1944:9)",
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+			{
+				column: 24,
+				fileName: "base/compat/test/browser/memo.test.js",
+				line: 1973,
+				name: "at Context.<anonymous>",
+				raw:
+					'    at Context.<anonymous> (base/compat/test/browser/memo.test.js:1973:24)"',
+				sourceColumn: -1,
+				sourceFileName: "",
+				sourceLine: -1,
+				type: "",
+			},
+		]);
+	});
+
+	it("should parse Chrome 88 traces with mapped function", () => {
+		const trace = `Error: foobar\n    spy() at Component.Foo [as constructor] (/projects/preact/compat/test/browser/memo.test.js:76:4 <- compat/test/browser/memo.test.js:1944:9)`;
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 4,
+				fileName: "/projects/preact/compat/test/browser/memo.test.js",
+				line: 76,
+				name: "spy() at Component.Foo [as constructor]",
+				raw:
+					"    spy() at Component.Foo [as constructor] (/projects/preact/compat/test/browser/memo.test.js:76:4 <- compat/test/browser/memo.test.js:1944:9)",
+				sourceColumn: 9,
+				sourceFileName: "compat/test/browser/memo.test.js",
+				sourceLine: 1944,
+				type: "",
+			},
+		]);
+	});
 });

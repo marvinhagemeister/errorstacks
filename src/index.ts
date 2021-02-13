@@ -117,9 +117,13 @@ const CHROME_IE_NATIVE = /^\s*at\s(<.*>):(\d+):(\d+)$/;
 // at foo.bar(bob) (foo.bar.js:123:39)
 // at foo.bar(bob) (foo.bar.js:123:39 <- original.js:123:34)
 const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
+// >= Chrome 88
+// spy() at Component.Foo [as constructor] (original.js:123:34)
+// spy() at Component.Foo [as constructor] (foo.bar.js:123:39 <- original.js:123:34)
+const CHROME_IE_FUNCTION_WITH_CALL = /^([\w\W]*)\s\((.*)\)/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
 // at about:blank:1:7
-const CHROME_BLANK = /\s*at\s(.*):(\d+):(\d+)/;
+const CHROME_BLANK = /\s*at\s(.*):(\d+):(\d+)$/;
 
 function parseChromeIe(lines: string[]): StackFrame[] {
 	// Many frameworks mess with error.stack. So we use this check
@@ -167,6 +171,14 @@ function parseChromeIe(lines: string[]): StackFrame[] {
 			frame.fileName = blank[1];
 			frame.line = +blank[2];
 			frame.column = +blank[3];
+			frames.push(frame);
+			continue;
+		}
+
+		const withFnCall = str.match(CHROME_IE_FUNCTION_WITH_CALL);
+		if (withFnCall) {
+			frame.name = withFnCall[1];
+			parseMapped(frame, withFnCall[2]);
 			frames.push(frame);
 			continue;
 		}
