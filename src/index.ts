@@ -189,7 +189,9 @@ function parseChromeIe(lines: string[]): StackFrame[] {
 	return frames;
 }
 
-export function parseStackTrace(stack: string): StackFrame[] {
+export function parseStackTrace(stack: string | undefined): StackFrame[] {
+	if (!stack) return [];
+
 	const lines = stack.split("\n").filter(Boolean);
 
 	// Libraries like node's "assert" module mess with the stack trace by
