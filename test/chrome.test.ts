@@ -640,4 +640,37 @@ describe("Chrome", () => {
 			},
 		]);
 	});
+
+	it("should parse Chrome 99 trace without braces", () => {
+		const trace = `Error: fail\n  at updater2 (/projects/preact/reactive/src/index.js:334:9 <- /projects/preact/reactive/test/browser/reactive.test.js:940:13)\n  at /projects/preact/reactive/test/browser/reactive.test.js:689:14 <- /projects/preact/reactive/test/browser/reactive.test.js:1904:18`;
+
+		expect(parseStackTrace(trace)).to.deep.equal([
+			{
+				column: 9,
+				fileName: "/projects/preact/reactive/src/index.js",
+				line: 334,
+				name: "updater2",
+				raw:
+					"  at updater2 (/projects/preact/reactive/src/index.js:334:9 <- /projects/preact/reactive/test/browser/reactive.test.js:940:13)",
+				sourceColumn: 13,
+				sourceFileName:
+					"/projects/preact/reactive/test/browser/reactive.test.js",
+				sourceLine: 940,
+				type: "",
+			},
+			{
+				column: 14,
+				fileName: "/projects/preact/reactive/test/browser/reactive.test.js",
+				line: 689,
+				name: "",
+				raw:
+					"  at /projects/preact/reactive/test/browser/reactive.test.js:689:14 <- /projects/preact/reactive/test/browser/reactive.test.js:1904:18",
+				sourceColumn: 18,
+				sourceFileName:
+					"/projects/preact/reactive/test/browser/reactive.test.js",
+				sourceLine: 1904,
+				type: "",
+			},
+		]);
+	});
 });
