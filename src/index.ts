@@ -123,6 +123,8 @@ const CHROME_IE_FUNCTION = /^at\s(.*)\s\((.*)\)$/;
 const CHROME_IE_FUNCTION_WITH_CALL = /^([\w\W]*)\s\((.*)\)/;
 const CHROME_IE_DETECTOR = /\s*at\s.+/;
 // at about:blank:1:7
+// >= Chrome 99
+// at /projects/foo.test.js:689:1 <- /projects/foo.test.js:10:1
 const CHROME_BLANK = /\s*at\s(.*):(\d+):(\d+)$/;
 
 function parseChromeIe(lines: string[]): StackFrame[] {
@@ -171,6 +173,7 @@ function parseChromeIe(lines: string[]): StackFrame[] {
 			frame.fileName = blank[1];
 			frame.line = +blank[2];
 			frame.column = +blank[3];
+			parseMapped(frame, `${blank[1]}:${blank[2]}:${blank[3]}`);
 			frames.push(frame);
 			continue;
 		}
