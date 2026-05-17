@@ -14,6 +14,13 @@
 		"./package.json": "./package.json",
 		"./": "./"
 	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"engines": {
+		"node": ">=24"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/marvinhagemeister/errorstacks.git"
