@@ -1,6 +1,6 @@
 {
 	"name": "errorstacks",
-	"version": "2.4.0",
+	"version": "2.4.1",
 	"description": "Parse error stack traces",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
@@ -13,6 +13,13 @@
 		},
 		"./package.json": "./package.json",
 		"./": "./"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"engines": {
+		"node": ">=24"
 	},
 	"repository": {
 		"type": "git",
